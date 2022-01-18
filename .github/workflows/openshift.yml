@@ -184,18 +184,13 @@ jobs:
     #     namespace: ${{ env.OPENSHIFT_NAMESPACE }}
     #     port: ${{ env.APP_PORT }}
 
-    - name: Install oc
-      uses: redhat-actions/oc-installer@v1
-      with:
-        oc_version: '4.6'
-
     - name: Create and expose app
       id: deply-and-expose
       run:
-        oc delete all --selector=app=${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} && \
-        oc new-app --name=${{ env.APP_NAME }} --labels=app=${{ env.APP_NAME }} ${{ steps.push-image.outputs.registry-path }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} -e COMPONENT_QUARKUS_BACKEND_HOST=quarkus-backend-opx -e COMPONENT_QUARKUS_BACKEND_PORT=8080 && \
-        oc expose service ${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} && \
-        oc get all --selector=app=${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }}
+        /home/runner/work/_temp/openshift-bin/oc delete all --selector=app=${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} && \
+        /home/runner/work/_temp/openshift-bin oc new-app --name=${{ env.APP_NAME }} --labels=app=${{ env.APP_NAME }} ${{ steps.push-image.outputs.registry-path }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} -e COMPONENT_QUARKUS_BACKEND_HOST=quarkus-backend-opx -e COMPONENT_QUARKUS_BACKEND_PORT=8080 && \
+        /home/runner/work/_temp/openshift-bin oc expose service ${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }} && \
+        /home/runner/work/_temp/openshift-bin oc get all --selector=app=${{ env.APP_NAME }} --namespace=${{ env.OPENSHIFT_NAMESPACE }}
 
     - name: Print application URL
       env:
