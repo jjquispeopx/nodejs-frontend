@@ -175,14 +175,21 @@ jobs:
 
     # This step should create a deployment, service, and route to run your app and expose it to the internet.
     # https://github.com/redhat-actions/oc-new-app#readme
+    # - name: Create and expose app
+    #   id: deploy-and-expose
+    #   uses: redhat-actions/oc-new-app@v1
+    #   with:
+    #     app_name: ${{ env.APP_NAME }}
+    #     image: ${{ steps.push-image.outputs.registry-path }}
+    #     namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+    #     port: ${{ env.APP_PORT }}
     - name: Create and expose app
-      id: deploy-and-expose
-      uses: redhat-actions/oc-new-app@v1
-      with:
-        app_name: ${{ env.APP_NAME }}
-        image: ${{ steps.push-image.outputs.registry-path }}
-        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-        port: ${{ env.APP_PORT }}
+      id: deply-and-expose
+      run:
+        oc delete all --selector=app=nodejs-frontend-opx --namespace=jairo-quispe-opx-dev
+        oc new-app --name=nodejs-frontend-opx --labels=app=nodejs-frontend-opx docker.io/jjquispeopx/nodejs-frontend-opx:latest --namespace=jairo-quispe-opx-dev -e COMPONENT_QUARKUS_BACKEND_HOST=quarkus-backend-opx -e COMPONENT_QUARKUS_BACKEND_PORT=8080
+        oc expose service nodejs-frontend-opx --namespace=jairo-quispe-opx-dev
+        oc get all --selector=app=nodejs-frontend-opx --namespace=jairo-quispe-opx-dev
 
     - name: Print application URL
       env:
