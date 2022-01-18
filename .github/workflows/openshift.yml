@@ -183,6 +183,12 @@ jobs:
     #     image: ${{ steps.push-image.outputs.registry-path }}
     #     namespace: ${{ env.OPENSHIFT_NAMESPACE }}
     #     port: ${{ env.APP_PORT }}
+
+    - name: Install oc
+      uses: redhat-actions/oc-installer@v1
+      with:
+        oc_version: '4.6'
+
     - name: Create and expose app
       id: deply-and-expose
       run:
